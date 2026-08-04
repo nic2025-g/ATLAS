@@ -1,0 +1,13 @@
+*.pbix
+*.pbix.bak
+04_Donnees/**/excel/*.xlsx
+.env
+secrets.yml
+credentials/
+05_ETL/dbt/target/
+05_ETL/dbt/logs/
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+*.log
