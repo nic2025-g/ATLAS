@@ -1,160 +1,337 @@
-# ATLAS — Plateforme décisionnelle de pilotage des investissements territoriaux
+# ATLAS
+## Analyse Territoriale des Liaisons, Aménagements et Subventions
 
-> **A**nalyse **T**erritoriale des **L**iaisons, **A**ménagements et **S**ubventions
+> **Plateforme décisionnelle de pilotage des investissements territoriaux**
 
 [![Stage](https://img.shields.io/badge/Stage-Data%20Engineering-2E6DB4)](.)
-[![Statut](https://img.shields.io/badge/Statut-En%20cours-orange)](.)
-[![Stack](https://img.shields.io/badge/Stack-PostgreSQL%20%7C%20dbt%20%7C%20Power%20BI-blue)](.)
+[![Statut](https://img.shields.io/badge/Projet-En%20développement-orange)](.)
+[![Architecture](https://img.shields.io/badge/Architecture-Moderne-success)](.)
+[![Power BI](https://img.shields.io/badge/PowerBI-Dashboard-yellow)](.)
+[![dbt](https://img.shields.io/badge/dbt-Transformation-orange)](.)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-DataWarehouse-blue)](.)
+[![Docker](https://img.shields.io/badge/Docker-Containerisation-2496ED)](.)
+[![Kestra](https://img.shields.io/badge/Kestra-Orchestration-purple)](.)
 [![Licence](https://img.shields.io/badge/Licence-MIT-green)](LICENSE)
 
 ---
 
-## Présentation
+# Vision
 
-ATLAS est une **plateforme décisionnelle** conçue pour la **Communauté de Communes du Grand Avignon**. Elle permet aux élus et au Directeur des Services Techniques (DGST) de piloter en temps réel leurs investissements territoriaux : coûts, délais, subventions, performance des services techniques.
+Les collectivités territoriales pilotent chaque année plusieurs dizaines de projets d'aménagement :
 
-Ce projet est réalisé dans le cadre d'un **stage Data Engineering** (15 juillet → 2 septembre 2025) et documenté comme un livrable de cabinet de conseil.
+- voirie,
+- réseaux,
+- espaces publics,
+- eau potable,
+- assainissement,
+- espaces verts,
+- mobilité,
+- transition écologique.
+
+Les données relatives à ces opérations sont souvent réparties dans de nombreux fichiers Excel, comptes-rendus, rapports techniques et documents administratifs.
+
+Cette dispersion rend difficile une vision globale de l'investissement public.
+
+**ATLAS** a pour ambition de devenir une plateforme décisionnelle permettant de structurer ces données afin d'aider les décideurs publics à piloter efficacement leurs investissements.
 
 ---
 
-## Le problème
+# Pourquoi ATLAS ?
 
-Le suivi des projets d'aménagement repose aujourd'hui sur des fichiers Excel manuels. Il n'existe pas de vision consolidée. Les élus ne peuvent pas répondre simplement à :
+Aujourd'hui, répondre à une simple question peut nécessiter plusieurs heures de recherche :
 
-- *Combien avons-nous investi depuis le début du mandat ?*
-- *Quel est notre reste à charge après subventions ?*
-- *Nos projets sont-ils livrés dans les délais et les budgets prévus ?*
+> Combien avons-nous réellement investi depuis le début du mandat ?
+
+ou encore
+
+> Quel est aujourd'hui le reste à charge de la collectivité après subventions ?
+
+ou encore
+
+> Quels projets présentent un risque de dépassement budgétaire ?
+
+ou encore
+
+> Les objectifs environnementaux fixés au lancement des projets sont-ils réellement atteints ?
+
+ATLAS centralise toutes ces informations afin de fournir une vision unique, fiable et actualisée.
 
 ---
 
-## La solution ATLAS
+# Objectif du projet
+
+L'objectif n'est pas simplement de produire un tableau de bord.
+
+L'objectif est de concevoir un véritable **Système d'Information Décisionnel Territorial** capable:
+
+- de structurer les données métier ;
+- de conserver leur historique ;
+- d'industrialiser les traitements ;
+- de produire automatiquement les indicateurs de pilotage ;
+- d'accompagner les élus dans leurs décisions.
+
+---
+
+# Les utilisateurs
+
+Le système est destiné principalement :
+
+- A la Direction Générale des Services Techniques (DGST)
+- Aux Directeurs de services
+- Aux Chefs de projets
+- Aux Élus de la collectivité
+- Aux Services financiers
+
+---
+
+# Les principales questions auxquelles ATLAS répond
+
+## Pilotage des investissements
+
+- Quel est le budget global engagé ?
+- Quel est le coût réel des opérations ?
+- Quel est le reste à charge ?
+- Quel est le taux de financement externe ?
+- Quels sont les projets les plus coûteux ?
+
+---
+
+## Pilotage des projets
+
+- Combien de projets sont en cours ?
+- Combien sont terminés ?
+- Quels projets sont en retard ?
+- Quels projets présentent des risques ?
+- Quels projets dépassent leur budget ?
+
+---
+
+## Performance des services techniques
+
+- Les études sont-elles réalisées dans les délais ?
+- Les entreprises respectent-elles leurs engagements ?
+- Les projets sont-ils livrés conformément aux objectifs ?
+
+---
+
+## Développement durable
+
+- Surface perméable créée
+- Nombre d'arbres plantés
+- Economie d'eau
+- Economie d'énergie
+- Biodiversité
+- Mobilité douce
+- Part d'économie locale
+- Heures d'insertion sociale
+
+---
+
+# Architecture fonctionnelle
 
 ```
-Sources Excel (SharePoint)
-        │
-        ▼
-   Airbyte (ingestion)
-        │
-        ▼
- PostgreSQL — raw → staging → gold
-        │
-        ▼
-    dbt (transformations)
-        │
-        ▼
-  Power BI (dashboard)
-        │
-   Kestra (orchestration)
+                    Sources de données
+
+                        SharePoint
+                           │
+                           ▼
+                     Fichiers Excel
+                           │
+                           ▼
+                     Airbyte (ETL)
+                           │
+                           ▼
+                  PostgreSQL (RAW)
+                           │
+                           ▼
+                  dbt (STAGING)
+                           │
+                           ▼
+                    dbt (GOLD)
+                           │
+                           ▼
+                 Power BI (Dashboard)
+                           │
+                           ▼
+                 Décisions des élus
 ```
 
 ---
 
-## Structure du dépôt
+# Architecture technique cible
+
+| Couche | Technologie | Rôle |
+|----------|-------------|------|
+| Sources | Excel / SharePoint | Saisie métier |
+| Ingestion | Airbyte | Collecte automatisée |
+| Stockage | PostgreSQL | Entrepôt de données |
+| Transformation | dbt | Nettoyage et modélisation |
+| Orchestration | Kestra | Automatisation des pipelines |
+| Conteneurisation | Docker | Reproductibilité |
+| Visualisation | Power BI | Reporting décisionnel |
+
+---
+
+# Les projets pilotes
+
+Le développement débute sur quatre opérations réelles d'aménagement urbain.
+
+| Projet | Commune | Budget | Complexité |
+|---------|----------|------------|------------|
+| Requalification avenue de Verdun | Les Angles | 1,85 M€ | Moyenne |
+| Rue des Marronniers | Avignon | 1,70 M€ | Faible |
+| Quais de la Sorgue | Entraigues | 2,35 M€ | Élevée |
+| Avenue du Grès | Morières | 2,10 M€ | Moyenne |
+
+Ces projets permettront de construire un modèle de données générique capable d'être réutilisé sur l'ensemble des futures opérations de la collectivité.
+
+---
+
+# Stack Data Engineering
+
+```
+Excel
+
+↓
+
+SharePoint
+
+↓
+
+Airbyte
+
+↓
+
+PostgreSQL (Raw)
+
+↓
+
+dbt (Staging)
+
+↓
+
+dbt (Gold)
+
+↓
+
+Power BI
+
+↓
+
+Kestra
+
+↓
+
+Décision
+```
+
+---
+
+# Structure du dépôt
 
 ```
 ATLAS/
-├── README.md
-├── 01_Contexte/              ← Présentation, objectifs, acteurs, glossaire
-├── 02_Analyse_Metier/        ← Cycle de vie, processus, besoins, indicateurs
-├── 03_Modelisation/          ← MCD, MLD, Star Schema, dictionnaires
-│   ├── MCD/
-│   ├── MLD/
-│   ├── Star_Schema/
-│   └── Dictionnaires/
-├── 04_Donnees/               ← Données par projet (notes, Excel, sources, nettoyage)
-│   ├── Projet1_Les_Angles/
-│   ├── Projet2_Avignon/
-│   ├── Projet3_Entraigues/
-│   └── Projet4_Morieres/
-├── 05_ETL/                   ← Pipeline de données
-│   ├── Python/               ← Scripts de transformation
-│   ├── SQL/                  ← DDL et requêtes
-│   ├── dbt/                  ← Modèles dbt
-│   └── Kestra/               ← Workflows d'orchestration
-├── 06_Dashboard/             ← Power BI, mockups, KPIs, captures
-│   ├── Mockups/
-│   ├── KPIs/
-│   └── Captures/
-├── 07_Documentation/         ← Annexes et livrables du dossier de conception
-├── rapport_stage/            ← Rapport de stage et journal de bord
-└── docs/                     ← Documentation technique
+
+├── 01_Contexte/
+├── 02_Analyse_Metier/
+├── 03_Modelisation/
+│      ├── MCD
+│      ├── MLD
+│      ├── Star_Schema
+│      └── Data_Dictionary
+│
+├── 04_Donnees/
+│      ├── Projet_01
+│      ├── Projet_02
+│      ├── Projet_03
+│      └── Projet_04
+│
+├── 05_ETL/
+│      ├── Python
+│      ├── SQL
+│      ├── dbt
+│      └── Kestra
+│
+├── 06_Dashboard/
+│
+├── 07_Documentation/
+│
+├── decision_book/
+│
+├── rapport_stage/
+│
+└── docs/
 ```
 
 ---
 
-## Les 4 projets pilotes
+# Decision Book
 
-| # | Projet | Commune | Budget programme | Complexité | MOE |
-|---|--------|---------|-----------------|-----------|-----|
-| 1 | Requalification av. de Verdun + place du 8-Mai | Les Angles | 1 850 000 € HT | Moyenne | Artelia |
-| 2 | Réaménagement rue des Marronniers | Avignon (Monclar) | 1 700 000 € HT | Faible | Artelia |
-| 3 | Requalification quais de la Sorgue + place du Marché | Entraigues-sur-la-Sorgue | 2 350 000 € HT | Élevée | Artelia |
-| 4 | Requalification av. du Grès + place des Micocouliers | Morières-lès-Avignon | 2 100 000 € HT | Moyenne | Artelia |
+Le dossier **Decision Book** constitue le cœur fonctionnel du projet.
 
----
+Il ne décrit pas le code.
 
-## Stack technique
+Il décrit les décisions que le système doit permettre de prendre.
 
-| Couche | Outil | Rôle |
-|--------|-------|------|
-| Sources | Excel / SharePoint | Données saisies par les chefs de projet |
-| Ingestion | Airbyte | Connecteurs sources → PostgreSQL |
-| Stockage | PostgreSQL | Entrepôt (raw → staging → gold) |
-| Transformation | dbt | Modèles SQL versionés et testés |
-| Orchestration | Kestra | Pipeline end-to-end automatisé |
-| Environnement | Docker | Stack conteneurisée |
-| Restitution | Power BI | Dashboard décisionnel |
+Chaque indicateur y est documenté :
+
+- définition métier ;
+- règle de calcul ;
+- source de données ;
+- fréquence de mise à jour ;
+- seuils d'alerte ;
+- décision associée.
+
+Cette documentation fait le lien entre les besoins des élus et l'architecture technique.
 
 ---
 
-## KPIs principaux
+# Livrables
 
-**Axe 1 — Investissements**
-- Budget total engagé sur le mandat
-- Coût total réalisé
-- Total subventions notifiées
-- **Reste à charge** = Coût réalisé − Subventions notifiées
-- Taux de financement externe
-
-**Axe 2 — Performance des services techniques**
-- Taux de respect des délais
-- Taux de dépassement budgétaire
-- Nombre d'opérations en retard
-- Écart AVP vs coût final
-
-**Axe 3 — Développement durable** *(données réelles disponibles)*
-- Surface perméable créée (m²)
-- Arbres plantés (U)
-- Économie électrique (kWh/an)
-- Heures d'insertion (h)
-- Part d'économie locale (%)
+| Code | Livrable | Statut |
+|------|-----------|--------|
+| L00 | Vision stratégique | ✅ |
+| L01 | Étude du besoin | ✅ |
+| L02 | Analyse métier | ✅ |
+| L03 | Modèle Conceptuel | 🔄 |
+| L04 | Modèle Logique | 🔄 |
+| L05 | Architecture cible | 🔄 |
+| L06 | Dashboard Power BI | ⏳ |
+| L07 | Industrialisation | ⏳ |
+| L08 | Guide utilisateur | ⏳ |
+| L09 | Retour d'expérience | ⏳ |
 
 ---
 
-## Dossier de conception ATLAS
+# Ce projet
 
-| Livrable | Description | Statut |
-|---------|-------------|--------|
-| L00 — Vision | Problème, solution, périmètre | ✅ |
-| L01 — Étude du besoin | Profils, KPIs, alertes | ✅ |
-| L02 — Analyse métier | Loi MOP, processus AS-IS/TO-BE | ✅ |
-| L03 — Modèle Conceptuel | MCD, entités, relations | 🔄 |
-| L04 — Modèle Logique | Star schema, dictionnaire | 🔄 |
-| L05 — Architecture | Pipeline, justifications | ⏳ |
-| L06 — Spécifications Dashboard | KPIs, DAX, wireframes | ⏳ |
-| L07 — Industrialisation | dbt, Kestra, gouvernance | ⏳ |
-| L08 — Guide utilisateur | Mode d'emploi | ⏳ |
-| L09 — Retour d'expérience | Bilan, recommandations | ⏳ |
+Ce dépôt est développé dans le cadre d'un stage de **Data Engineering** réalisé auprès de la **Communauté de Communes du Grand Avignon**.
+
+L'objectif pédagogique est de démontrer une démarche complète de conception d'un système décisionnel :
+
+- compréhension du métier ;
+- modélisation des données ;
+- conception d'un Data Warehouse ;
+- industrialisation des traitements ;
+- restitution décisionnelle.
 
 ---
 
-## Auteur
+# Auteur
 
-**BAMANIA Nicolas** — Stagiaire Data Engineering  
-Communauté de Communes du Grand Avignon  
-Encadrant : **Dominique VOLOT** — Directeur des Services Techniques  
-Stage : 15 juillet → 2 septembre 2025
+**Bamania Nathanaël Nicolas**
+
+Stagiaire Data Engineering
+
+Encadrant :
+**Dominique Volot**
+Direction Générale des Services Techniques
+
+Période :
+15 juillet 2026 → 2 septembre 2026
 
 ---
 
-*ATLAS — Analyse Territoriale des Liaisons, Aménagements et Subventions*
+> **ATLAS**
+>
+> *Transformer les données des projets d'aménagement en décisions éclairées pour les collectivités territoriales.*
