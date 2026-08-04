@@ -51,7 +51,7 @@
 | Lot | Mandataire | Co-traitant | Total lot |
 |-----|-----------|-------------|----------|
 | Lot 1 — VRD | SO.TRA.VER (Pujaut, 84124) — 1 200 000  € | AQUA-RHODAN (Morières-lès-Avignon) — 150 000  € | 1 350 000 € |
-| Lot 2 — Espaces verts | TERRA PAYSAGE SUD (Avignon) — 350 000 € | ELEC'CITÉ RÉSEAUX (Avignon) — 150 000 € | 500 000 € |
+| Lot 2 — Espaces verts | TERRA PAYSAGE SUD (Caumont-sur-Durance) — 130 000  € | ELEC'CITÉ RÉSEAUX (Avignon) — 150 000 € | 500 000 € |
 | Lot 3 — Éclairage | VRD MÉDITERRANÉE (Avignon) — 150 000 € | SIGNALIS PROVENCE (Morières) — 170 000 € | 320 000 € |
 | **TOTAL** | | | **1 790 000  €** |
 
