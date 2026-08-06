@@ -1,337 +1,307 @@
-# ATLAS
-## Analyse Territoriale des Liaisons, Aménagements et Subventions
+# ATLAS — Plateforme décisionnelle de pilotage des investissements territoriaux
 
-> **Plateforme décisionnelle de pilotage des investissements territoriaux**
+> **A**nalyse **T**erritoriale des **L**iaisons, **A**ménagements et **S**ubventions
 
-[![Stage](https://img.shields.io/badge/Stage-Data%20Engineering-2E6DB4)](.)
-[![Statut](https://img.shields.io/badge/Projet-En%20développement-orange)](.)
-[![Architecture](https://img.shields.io/badge/Architecture-Moderne-success)](.)
-[![Power BI](https://img.shields.io/badge/PowerBI-Dashboard-yellow)](.)
-[![dbt](https://img.shields.io/badge/dbt-Transformation-orange)](.)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-DataWarehouse-blue)](.)
-[![Docker](https://img.shields.io/badge/Docker-Containerisation-2496ED)](.)
-[![Kestra](https://img.shields.io/badge/Kestra-Orchestration-purple)](.)
-[![Licence](https://img.shields.io/badge/Licence-MIT-green)](LICENSE)
+[![Statut](https://img.shields.io/badge/Statut-En%20développement-orange)](.)
+[![Modélisation](https://img.shields.io/badge/MCD%20%2F%20MLD-Conçus-1A6B3C)](.)
+[![Données](https://img.shields.io/badge/Données-17%20fichiers%20Excel-217346)](.)
+[![BI](https://img.shields.io/badge/Power%20BI-En%20cours-F2C811)](.)
 
----
+## Ce projet en une phrase
 
-# Vision
+ATLAS vise à fournir au Directeur des Services Techniques et aux élus une vision consolidée et régulièrement actualisée des opérations d’aménagement : budgets, marchés, subventions, délais, risques et performance environnementale et sociale.
 
-Les collectivités territoriales pilotent chaque année plusieurs dizaines de projets d'aménagement :
+## Contexte
 
-- voirie,
-- réseaux,
-- espaces publics,
-- eau potable,
-- assainissement,
-- espaces verts,
-- mobilité,
-- transition écologique.
+Les informations relatives aux projets d’aménagement sont initialement présentes dans des dossiers métier narratifs et dans différents supports de suivi.
 
-Les données relatives à ces opérations sont souvent réparties dans de nombreux fichiers Excel, comptes-rendus, rapports techniques et documents administratifs.
+La première mission du projet consiste donc à transformer ces informations non structurées en un socle de données homogène, contrôlé et réutilisable.
 
-Cette dispersion rend difficile une vision globale de l'investissement public.
+ATLAS repose actuellement sur quatre opérations pilotes, structurées dans dix-sept fichiers Excel publiés sur OneDrive / SharePoint et destinés à alimenter Power BI.
 
-**ATLAS** a pour ambition de devenir une plateforme décisionnelle permettant de structurer ces données afin d'aider les décideurs publics à piloter efficacement leurs investissements.
+Le modèle est conçu pour intégrer progressivement de nouvelles opérations sans remettre en cause sa structure générale.
 
----
-
-# Pourquoi ATLAS ?
-
-Aujourd'hui, répondre à une simple question peut nécessiter plusieurs heures de recherche :
-
-> Combien avons-nous réellement investi depuis le début du mandat ?
-
-ou encore
-
-> Quel est aujourd'hui le reste à charge de la collectivité après subventions ?
-
-ou encore
-
-> Quels projets présentent un risque de dépassement budgétaire ?
-
-ou encore
-
-> Les objectifs environnementaux fixés au lancement des projets sont-ils réellement atteints ?
-
-ATLAS centralise toutes ces informations afin de fournir une vision unique, fiable et actualisée.
-
----
-
-# Objectif du projet
-
-L'objectif n'est pas simplement de produire un tableau de bord.
-
-L'objectif est de concevoir un véritable **Système d'Information Décisionnel Territorial** capable:
-
-- de structurer les données métier ;
-- de conserver leur historique ;
-- d'industrialiser les traitements ;
-- de produire automatiquement les indicateurs de pilotage ;
-- d'accompagner les élus dans leurs décisions.
-
----
-
-# Les utilisateurs
-
-Le système est destiné principalement :
-
-- A la Direction Générale des Services Techniques (DGST)
-- Aux Directeurs de services
-- Aux Chefs de projets
-- Aux Élus de la collectivité
-- Aux Services financiers
-
----
-
-# Les principales questions auxquelles ATLAS répond
-
-## Pilotage des investissements
-
-- Quel est le budget global engagé ?
-- Quel est le coût réel des opérations ?
-- Quel est le reste à charge ?
-- Quel est le taux de financement externe ?
-- Quels sont les projets les plus coûteux ?
-
----
-
-## Pilotage des projets
-
-- Combien de projets sont en cours ?
-- Combien sont terminés ?
-- Quels projets sont en retard ?
-- Quels projets présentent des risques ?
-- Quels projets dépassent leur budget ?
-
----
-
-## Performance des services techniques
-
-- Les études sont-elles réalisées dans les délais ?
-- Les entreprises respectent-elles leurs engagements ?
-- Les projets sont-ils livrés conformément aux objectifs ?
-
----
-
-## Développement durable
-
-- Surface perméable créée
-- Nombre d'arbres plantés
-- Economie d'eau
-- Economie d'énergie
-- Biodiversité
-- Mobilité douce
-- Part d'économie locale
-- Heures d'insertion sociale
-
----
-
-# Architecture fonctionnelle
+## D'où je suis parti — où j'en suis
 
 ```
-                    Sources de données
+Semaine 1  →  Découverte de Power BI — modèle simplifié ventes
+                ↓ apprentissage : granularité, star schema, dim_calendrier
 
-                        SharePoint
-                           │
-                           ▼
-                     Fichiers Excel
-                           │
-                           ▼
-                     Airbyte (ETL)
-                           │
-                           ▼
-                  PostgreSQL (RAW)
-                           │
-                           ▼
-                  dbt (STAGING)
-                           │
-                           ▼
-                    dbt (GOLD)
-                           │
-                           ▼
-                 Power BI (Dashboard)
-                           │
-                           ▼
-                 Décisions des élus
+Semaine 2  →  Analyse métier — loi MOP, cycle de vie, besoins élus
+                ↓ apprentissage : le métier structure le modèle, pas l'inverse
+
+Semaine 3  →  Données réelles — 4 projets pilotes, 16 indicateurs DD
+                ↓ apprentissage : les données réelles révèlent ce que le modèle théorique rate
+
+Semaine 4  →  MCD Merise complet → MLD → DDL SQL → 17 fichiers Excel
+                ↓ apprentissage : méthode d'abord, outils ensuite
+
+Semaine 5+ →  Power BI dashboard — en cours
 ```
 
 ---
 
-# Architecture technique cible
+## Le problème résolu
 
-| Couche | Technologie | Rôle |
-|----------|-------------|------|
-| Sources | Excel / SharePoint | Saisie métier |
-| Ingestion | Airbyte | Collecte automatisée |
-| Stockage | PostgreSQL | Entrepôt de données |
-| Transformation | dbt | Nettoyage et modélisation |
-| Orchestration | Kestra | Automatisation des pipelines |
-| Conteneurisation | Docker | Reproductibilité |
-| Visualisation | Power BI | Reporting décisionnel |
+Aujourd'hui, les services techniques suivent leurs projets dans des fichiers Excel manuels. Il n'existe pas de vision consolidée. Les élus ne peuvent pas répondre simplement à :
+
+- *Combien avons-nous investi depuis le début du mandat ?*
+- *Quel est le reste à charge après subventions ?*
+- *Nos projets sont-ils livrés dans les délais et les budgets annoncés ?*
 
 ---
 
-# Les projets pilotes
+## La solution ATLAS
+```
+L'architecture opérationnelle actuelle est :
 
-Le développement débute sur quatre opérations réelles d'aménagement urbain.
+Notes métier des opérations
+          │
+          ▼
+Extraction et structuration manuelles
+          │
+          ▼
+17 fichiers Excel normalisés
+          │
+          ▼
+OneDrive / SharePoint
+          │
+          ▼
+Power Query
+          │
+          ▼
+Modèle analytique Power BI
+          │
+          ▼
+Dashboard élus / DGST
 
-| Projet | Commune | Budget | Complexité |
-|---------|----------|------------|------------|
-| Requalification avenue de Verdun | Les Angles | 1,85 M€ | Moyenne |
-| Rue des Marronniers | Avignon | 1,70 M€ | Faible |
-| Quais de la Sorgue | Entraigues | 2,35 M€ | Élevée |
-| Avenue du Grès | Morières | 2,10 M€ | Moyenne |
 
-Ces projets permettront de construire un modèle de données générique capable d'être réutilisé sur l'ensemble des futures opérations de la collectivité.
+La version industrielle sera une architecture cible :
 
+Excel / SharePoint
+        │
+        ▼
+      Airbyte
+        │
+        ▼
+ PostgreSQL — raw
+        │
+        ▼
+ dbt — staging / marts
+        │
+        ▼
+     Power BI
+        ▲
+        │
+      Kestra
+```
 ---
 
-# Stack Data Engineering
+## État actuel du projet
+
+### Réalisé
 
 ```
-Excel
-
-↓
-
-SharePoint
-
-↓
-
-Airbyte
-
-↓
-
-PostgreSQL (Raw)
-
-↓
-
-dbt (Staging)
-
-↓
-
-dbt (Gold)
-
-↓
-
-Power BI
-
-↓
-
-Kestra
-
-↓
-
-Décision
+- Analyse de quatre opérations pilotes ;
+- extraction et structuration des informations issues des notes métier ;
+- conception du MCD et du MLD ;
+- création de 17 fichiers Excel reliés par des identifiants ;
+- dépôt des fichiers sur OneDrive / SharePoint ;
+- préparation du dictionnaire de données ;
+- conception préliminaire du DDL PostgreSQL.
 ```
+### En cours
+
+```
+- contrôle de la qualité et de l’intégrité référentielle des fichiers ;
+- connexion des fichiers à Power BI ;
+- adaptation du modèle conceptuel au modèle analytique Power BI ;
+- création des mesures DAX et des premières pages du dashboard.
+```
+
+### Perspective d’industrialisation
+
+```
+- ingestion avec Airbyte ;
+- stockage dans PostgreSQL ;
+- transformations avec dbt ;
+- orchestration avec Kestra ;
+- conteneurisation avec Docker.
+```
+---
+## Le modèle de données — 17 tables en 5 couches
+
+```
+Couche 1 — Référentiels stables   (6)
+    COMMUNE · ACTEUR · ENTREPRISE · PHASE · ORGANISME · TYPE_TRAVAUX
+
+Couche 2 — Référentiels catalogues(2)
+    TYPE_RISQUE · TYPE_INDICATEUR
+
+Couche 3 — Objets métier          (4)
+    OPERATION · ESTIMATION_FINANCIERE · MARCHE · LOT
+
+Couche 4 — Associations N:N       (2)
+    INTERVENIR_SUR · PARTICIPER_AU_LOT
+
+Couche 5 — Faits métier           (3)
+    SUBVENTION · RISQUE · INDICATEUR_DD
+```
+
+**3 décisions de modélisation importantes :**
+
+`type_acteur` n'est pas dans `ACTEUR` — le rôle MOA/MOE est dans l'association `INTERVENIR_SUR`. Artelia est une organisation — son rôle dépend de sa relation avec le projet.
+
+`ESTIMATION_FINANCIERE` est une entité séparée — pas 5 colonnes dans `OPERATION`. Chaque estimation est une ligne avec sa date. L'historique est conservé de l'AVP au coût final.
+
+`MARCHE` est une entité à part entière — acte juridique distinct de l'opération, avec sa propre cardinalité (1 opération → N marchés possibles).
 
 ---
 
-# Structure du dépôt
+## Les 4 projets pilotes
+
+| # | Commune | Budget programme | Prix marché | Subventions | Reste à charge |
+|---|---------|-----------------|-------------|-------------|----------------|
+| 1 | Les Angles | 1 850 000 € | 1 950 000 € | 303 000 € | 1 647 000 € |
+| 2 | Avignon (Monclar) | 1 700 000 € | 1 790 000 € | 210 000 € | 1 580 000 € |
+| 3 | Entraigues-sur-la-Sorgue | 2 350 000 € | 2 180 000 € | 293 000 € | 1 887 000 € |
+| 4 | Morières-lès-Avignon | 2 100 000 € | 2 180 000 € | 303 000 € | 1 877 000 € |
+| **Total** | | **8 000 000 €** | **8 100 000 €** | **1 109 000 €** | **6 991 000 €** |
+
+---
+
+## Structure du dépôt
 
 ```
 ATLAS/
-
-├── 01_Contexte/
-├── 02_Analyse_Metier/
-├── 03_Modelisation/
-│      ├── MCD
-│      ├── MLD
-│      ├── Star_Schema
-│      └── Data_Dictionary
+├── README.md                       ← Ce fichier — point d'entrée
 │
-├── 04_Donnees/
-│      ├── Projet_01
-│      ├── Projet_02
-│      ├── Projet_03
-│      └── Projet_04
+├── 01_Contexte/                    ← Présentation, acteurs, glossaire
+│   ├── README.md
+│   └── glossaire.md                ← 25 termes métier définis
 │
-├── 05_ETL/
-│      ├── Python
-│      ├── SQL
-│      ├── dbt
-│      └── Kestra
+├── 02_Analyse_Metier/              ← Cycle de vie, besoins, processus
+│   ├── README.md                   ← Cycle générique AVP→AOR
+│   └── synthese_4_projets.md       ← Comparatif des 4 projets pilotes
 │
-├── 06_Dashboard/
+├── 03_Modelisation/                ← MCD, MLD, SQL, dictionnaire
+│   ├── MCD/mcd.md                  ← Modèle Conceptuel Merise validé
+│   ├── MLD/mld.md                  ← Modèle Logique — 17 tables
+│   ├── Star_Schema/                ← (Power BI — à venir)
+│   └── Dictionnaires/
+│       └── dictionnaire_donnees.md ← Chaque colonne documentée
 │
-├── 07_Documentation/
+├── 04_Donnees/                     ← Données brutes par projet
+│   ├── Projet1_Les_Angles/notes_brutes/
+│   ├── Projet2_Avignon/notes_brutes/
+│   ├── Projet3_Entraigues/notes_brutes/
+│   └── Projet4_Morieres/notes_brutes/
 │
-├── decision_book/
+├── 05_ETL/                         ← Pipeline de données
+│   ├── Python/structuration_donnees.py   ← Audit qualité des données
+│   └── SQL/star_schema.sql               ← DDL PostgreSQL complet (Le projet est documenté sous la forme d’un dossier de conception comprenant l’analyse du besoin, le modèle de données, les règles de gestion, les spécifications du dashboard et les perspectives d’industrialisation.)
 │
-├── rapport_stage/
+├── 06_Dashboard/                   ← Power BI (à venir)
 │
-└── docs/
+├── 07_Documentation/               ← Annexes et livrables Word
+│
+└── rapport_stage/
+    └── rapport_stage.md            ← Rapport vivant — mis à jour chaque semaine
 ```
 
 ---
 
-# Decision Book
+## Stack technique
 
-Le dossier **Decision Book** constitue le cœur fonctionnel du projet.
-
-Il ne décrit pas le code.
-
-Il décrit les décisions que le système doit permettre de prendre.
-
-Chaque indicateur y est documenté :
-
-- définition métier ;
-- règle de calcul ;
-- source de données ;
-- fréquence de mise à jour ;
-- seuils d'alerte ;
-- décision associée.
-
-Cette documentation fait le lien entre les besoins des élus et l'architecture technique.
+| Couche | Phase 1 (en cours) | Phase 2 (conçue) |
+|--------|-------------------|-----------------|
+| Sources | 17 fichiers Excel | Excel / SharePoint |
+| Ingestion | — | Airbyte |
+| Stockage | — | PostgreSQL (DDL prêt) |
+| Transformation | — | dbt |
+| Orchestration | — | Kestra |
+| Restitution | Power BI | Power BI |
 
 ---
 
-# Livrables
+## Démarche suivie:
 
-| Code | Livrable | Statut |
-|------|-----------|--------|
-| L00 | Vision stratégique | ✅ |
-| L01 | Étude du besoin | ✅ |
-| L02 | Analyse métier | ✅ |
-| L03 | Modèle Conceptuel | 🔄 |
-| L04 | Modèle Logique | 🔄 |
-| L05 | Architecture cible | 🔄 |
-| L06 | Dashboard Power BI | ⏳ |
-| L07 | Industrialisation | ⏳ |
-| L08 | Guide utilisateur | ⏳ |
-| L09 | Retour d'expérience | ⏳ |
+1. **Acculturation BI**  
+   Étude d’un cas simplifié afin de maîtriser la granularité, les relations et le schéma en étoile.
 
----
+2. **Analyse métier**  
+   Compréhension du cycle de vie des opérations, des besoins du DGST et des attentes des élus.
 
-# Ce projet
+3. **Analyse des cas pilotes**  
+   Extraction des informations présentes dans quatre dossiers d’aménagement.
 
-Ce dépôt est développé dans le cadre d'un stage de **Data Engineering** réalisé auprès de la **Communauté de Communes du Grand Avignon**.
+4. **Conception des données**  
+   Élaboration du MCD, du MLD, du dictionnaire et des règles de gestion.
 
-L'objectif pédagogique est de démontrer une démarche complète de conception d'un système décisionnel :
+5. **Construction du socle Excel**  
+   Création de 17 fichiers normalisés et publication sur OneDrive / SharePoint.
 
-- compréhension du métier ;
-- modélisation des données ;
-- conception d'un Data Warehouse ;
-- industrialisation des traitements ;
-- restitution décisionnelle.
+6. **Restitution décisionnelle**  
+   Construction en cours du modèle Power BI, des KPI et des pages utilisateurs.
+
+7. **Projection industrielle**  
+   Conception d’une architecture cible PostgreSQL, dbt, Airbyte, Kestra et Docker.
 
 ---
 
-# Auteur
+## Périmètre et limites actuelles
 
-**Bamania Nathanaël Nicolas**
+La première version d’ATLAS constitue un prototype décisionnel construit à partir de quatre opérations pilotes.
 
-Stagiaire Data Engineering
+À ce stade :
 
-Encadrant :
-**Dominique Volot**
-Direction Générale des Services Techniques
+- les informations sont extraites manuellement depuis des notes métier ;
+- les fichiers Excel constituent le système de collecte et de stockage ;
+- certaines données de clôture sont absentes, notamment les coûts définitifs et les dates réelles de réception ;
+- les indicateurs sont calculés sur un échantillon limité ;
+- l’architecture PostgreSQL, dbt et Kestra est conçue comme une perspective et n’est pas encore déployée.
 
-Période :
-15 juillet 2026 → 2 septembre 2026
+Le modèle a toutefois été pensé pour accueillir progressivement de nouvelles opérations.
 
 ---
 
-> **ATLAS**
->
-> *Transformer les données des projets d'aménagement en décisions éclairées pour les collectivités territoriales.*
+## Qualité et gouvernance des données
+
+ATLAS repose sur plusieurs règles de qualité :
+
+- unicité des clés primaires ;
+- contrôle des clés étrangères ;
+- utilisation de référentiels communs ;
+- formats homogènes pour les dates et les montants ;
+- absence de cellules fusionnées dans les fichiers sources ;
+- listes contrôlées pour les phases, risques, organismes et types de travaux ;
+- traçabilité des informations manquantes ou à confirmer.
+
+Un script d’audit permet de détecter les doublons, les références orphelines et les valeurs obligatoires absentes.
+
+---
+
+## Prochaines étapes
+
+- [x] Analyser les quatre opérations pilotes
+- [x] Définir les entités et les règles métier
+- [x] Produire le MCD et le MLD
+- [x] Construire les 17 fichiers Excel
+- [x] Publier les fichiers sur OneDrive / SharePoint
+- [ ] Contrôler l’intégrité des relations
+- [ ] Construire le modèle analytique Power BI
+- [ ] Créer la dimension calendrier
+- [ ] Développer les KPI financiers
+- [ ] Développer les KPI de délais et de risques
+- [ ] Concevoir les vues Élus, DGST, Projet et Finances
+- [ ] Tester le dashboard avec l’encadrant
+- [ ] Finaliser le guide utilisateur
+- [ ] Formaliser l’architecture industrielle cible
+---
+
+## Auteur
+
+**BAMANIA Nicolas** — Stagiaire Data Engineering  
+Formation OpenClassrooms · CC Grand Avignon  
+Encadrant : **Dominique VOLOT** — Directeur des Services Techniques  
+Stage : 15 juillet → 2 septembre 2026
