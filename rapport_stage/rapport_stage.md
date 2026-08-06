@@ -1,14 +1,24 @@
-# Rapport de stage — ATLAS
+# Rapport de stage: ATLAS
 ## Conception d'une plateforme décisionnelle de pilotage des investissements territoriaux
 
 **Auteur :** BAMANIA Nicolas  
-**Formation :** Data Engineering — OpenClassrooms  
-**Entreprise :** Communauté de Communes du Grand Avignon  
+**Formation :** Data Engineering chez OpenClassrooms  
+**Entreprise :  
 **Encadrant :** Dominique VOLOT — Directeur des Services Techniques  
-**Période :** 15 juillet → 2 septembre 2025  
+**Période :** 15 juillet 2026 → 2 septembre 2026  
 **Dépôt :** https://github.com/nic2025-g/ATLAS
 
 ---
+
+## Pourquoi ATLAS ?
+
+Au départ, je pensais réaliser un simple tableau de bord Power BI.
+
+Très rapidement, j'ai compris que le véritable problème n'était pas la visualisation, mais l'absence d'un modèle de données cohérent.
+
+Le projet ATLAS est donc progressivement devenu un projet de conception d'un système décisionnel complet.
+
+Cette évolution explique pourquoi une grande partie du stage est consacrée à l'analyse métier et à la modélisation avant même la construction du dashboard.
 
 ## Résumé
 
@@ -70,21 +80,26 @@ Je connaissais les outils data mais pas le domaine métier de l'aménagement ter
 Lecture et analyse des notes de l'encadrant. Compréhension du cycle de vie d'un projet (loi MOP, 5 phases). Production des livrables L00, L01, L02. Première version du modèle de données (11 tables). Initialisation du dépôt GitHub.
 
 ### Ce que j'ai compris
+
 **La loi MOP structure directement le modèle de données.** Chaque phase (AVP, PRO, ACT, DET, AOR) produit une estimation budgétaire distincte. Ce n'est pas un choix de modélisation — c'est le reflet du cadre réglementaire. Si je n'avais pas compris la loi MOP, j'aurais mis 5 colonnes dans une seule table et écrasé les valeurs précédentes à chaque phase.
 
 **Les bordereaux de prix sont incomparables entre MOE.** Chaque cabinet structure ses postes de travaux différemment. Sans normalisation en catégories standardisées (AEP, EU, EP, Voirie…), il est impossible de comparer les coûts entre projets.
 
 **Ce que ça a changé :** j'ai arrêté de penser en colonnes Excel et commencé à penser en entités et relations.
 
+Les échanges avec mon encadrant ces moments-ci m'ont fait comprendre que le tableau de bord ne devait pas répondre à mes questions, mais à celles des élus.
+
+Cette remarque a complètement changé ma façon de construire le modèle.
+
 ---
 
 ## Semaine 3 — 29 juillet au 6 août
 
 ### D'où je partais
-J'avais un modèle de données théorique construit depuis les notes de l'encadrant. Mais je n'avais pas encore vu les données réelles.
+J'avais un modèle de données théorique construit depuis une prise de notes. Mais je n'avais pas encore vu les données réelles.
 
 ### Ce que j'ai fait
-R�union avec l'encadrant (dimanche 3 août). Réception et analyse des 4 dossiers de projets réels. Restructuration complète du dépôt GitHub en format cabinet de conseil. Découverte des 16 indicateurs de développement durable.
+Réunion avec l'encadrant (dimanche 3 août). Réception et analyse des 4 dossiers de projets réels. Restructuration complète du dépôt GitHub en format cabinet de conseil. Découverte des 16 indicateurs de développement durable.
 
 ### Ce que j'ai compris
 **Un modèle théorique est toujours incomplet.** Les données réelles m'ont révélé une dimension entière que je n'avais pas anticipée : les indicateurs de développement durable (16 par projet, avec cibles et valeurs constatées). J'ai dû ajouter une entité `INDICATEUR_DD` et un référentiel `TYPE_INDICATEUR` qui n'existaient pas dans ma première version.
@@ -99,6 +114,10 @@ R�union avec l'encadrant (dimanche 3 août). Réception et analyse des 4 dossier
 - Reste à charge collectivité : ~7 000 000 € HT
 - Taux de financement externe : 13,7%
 
+### Difficultés rencontrées
+Je pensais initialement modéliser les budgets directement dans **operation**. Après plusieurs échanges, j'ai compris que cette approche empêchait l'historisation.
+Cette erreur m'a conduit à créer l'entité **estimation_financiere**.
+
 ---
 
 ## Semaine 4 — 5 au 9 août
@@ -107,9 +126,36 @@ R�union avec l'encadrant (dimanche 3 août). Réception et analyse des 4 dossier
 J'avais des données structurées et un modèle de données incomplet — construit sans méthode formelle. Je générais des fichiers Excel "au fil de l'eau" en ajoutant des colonnes selon les besoins.
 
 ### Ce que j'ai fait
-**Décision majeure :** arrêter de générer des fichiers et reprendre depuis le MCD Merise.
+**Décision majeure :** arrêter de générer des fichiers et reprendre depuis le MCD Mérise.
 
 Construction du MCD complet avec la méthode Merise : 17 entités, toutes les cardinalités, toutes les associations. Discussion et validation de chaque choix avec l'encadrant (virtuel). Traduction en MLD. Génération du DDL PostgreSQL (571 lignes). Regénération des 17 fichiers Excel depuis le MCD validé.
+
+**Pourquoi repartir du MCD ?**
+
+Au départ, je construisais progressivement les fichiers Excel en ajoutant des colonnes au fur et à mesure de mes découvertes.
+
+Cette approche fonctionnait avec quatre projets, mais je me suis rapidement rendu compte qu'elle ne garantissait ni la cohérence des données, ni l'évolutivité du modèle.
+
+J'ai donc volontairement arrêté cette construction incrémentale afin de revenir à une démarche d'ingénierie :
+
+Métier
+↓
+
+MCD
+
+↓
+
+MLD
+
+↓
+
+Excel
+
+↓
+
+Power BI
+
+Cette décision m'a permis de garantir que chaque fichier Excel représente une entité clairement définie.
 
 ### Ce que j'ai compris
 **La méthode avant l'outil.** La différence entre un fichier Excel généré "au fil de l'eau" et un fichier Excel traduit depuis un MCD validé est invisible à l'œil nu — mais fondamentale. Le premier sera incohérent dès qu'on ajoute un nouveau projet. Le second est extensible sans modification de la structure.
@@ -137,7 +183,40 @@ Couche 5 — Faits métier           (3) : SUBVENTION, RISQUE, INDICATEUR_DD
 
 **Ce que ça a changé :** je ne génère plus de fichiers au fil de l'eau. Chaque fichier Excel est maintenant la traduction physique d'une entité validée dans le MCD.
 
+Avec le recul, je pense qu'il aurait été plus efficace de commencer par une matrice d'extraction des données avant de construire les premiers fichiers Excel.
+Cette matrice aurait permis de mieux identifier les objets métier récurrents.
+
+### Questions ouvertes
+
+```
+Faut-il une entité **calendrier** ?
+
+Le planning doit-il rester une entité ?
+
+**marche** est-il indispensable ?
+
+Comment adapter le modèle à plusieurs mandats ?
+```
+
+### Ce que j'ai compris aujourd'hui:
+
+```
+- Aujourd'hui j'ai compris que le MCD ne sert pas seulement à dessiner des boîtes. Il sert à définir ce qui existe réellement dans le métier.
+- j'ai aussi compris qu'une entreprise ne "fait pas partie" d'une opération. Elle intervient sur un lot
+- Aujourd'hui j'ai compris pourquoi les associations N:N existent.
+```
+
+### Les prochaines hypotheses a verifier:
+
+**Hypothèse 1:** Le modèle est-il capable d'intégrer 50 projets ?
+
+**Hypothèse 2:** Les 17 fichiers sont-ils suffisants ?
+
+**Hypothèse 3:** Power BI aura-t-il besoin d'un Star Schema différent du MCD ?
+
+**Hypothèse 4:** Quels KPI les élus utiliseront-ils réellement ?
 ---
+
 
 ## Semaines 5–8 — À venir
 
