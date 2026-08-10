@@ -38,7 +38,7 @@ Programme (définition du besoin)
 
 ## Structure commune aux 4 projets
 
-### Allotissement systématique en 3 lots
+### Allotissement systématique en lots variant de 1 a 5
 
 | Lot | Contenu | Entreprises mandataires observées |
 |-----|---------|----------------------------------|

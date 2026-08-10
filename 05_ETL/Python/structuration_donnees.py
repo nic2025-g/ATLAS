@@ -1,9 +1,9 @@
 """
 ATLAS — Script de nettoyage et structuration des données
 Projet : Communauté de Communes du Grand Avignon
-Auteur : BAMANIA Nicolas — Stage Data Engineering 2025
+Auteur : BAMANIA Nathanael Nicolas — Stage Data Engineering 2026
 
-Ce script transforme les données brutes des projets (Excel) en DataFrames
+Ce script transforme les données brutes des projets (Excel généré à partir des prises de note en word) en DataFrames
 structurés prêts pour l'ingestion dans PostgreSQL via Airbyte ou chargement direct.
 """
 

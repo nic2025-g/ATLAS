@@ -46,4 +46,4 @@
 
 ---
 
-*Glossaire ATLAS · Communauté de Communes du Grand Avignon · 2025*
+*Glossaire ATLAS · Communauté de Communes du Grand Avignon · 2026*

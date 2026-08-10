@@ -4,8 +4,8 @@
 -- Pilotage des investissements territoriaux
 -- Communauté de Communes du Grand Avignon
 -- ============================================================
--- Auteur  : BAMANIA Nicolas — Stage Data Engineering 2025
--- Version : 1.0 — Août 2025
+-- Auteur  : BAMANIA Nathanael Nicolas — Stage Data Engineering 2026
+-- Version : 1.0 — Août 2026
 -- MCD     : Validé — Méthode Merise
 -- Ordre   : Référentiels → Objets métier → Associations → Faits
 -- ============================================================

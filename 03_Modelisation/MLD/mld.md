@@ -273,4 +273,4 @@ CREATE INDEX idx_dim_op_moe      ON gold.dim_operation(moe_id);
 
 ---
 
-*MLD ATLAS · v1.0 · Août 2025 — 3 tables de faits, 8 dimensions, 11 tables au total*
+*MLD ATLAS · v1.0 · Août 2026 — 3 tables de faits, 8 dimensions, 11 tables au total*

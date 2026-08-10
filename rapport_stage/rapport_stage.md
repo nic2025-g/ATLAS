@@ -1,4 +1,5 @@
 # Rapport de stage: ATLAS
+
 ## Conception d'une plateforme décisionnelle de pilotage des investissements territoriaux
 
 **Auteur :** BAMANIA Nicolas  
@@ -63,6 +64,7 @@ Je connaissais Power BI de nom mais ne l'avais jamais utilisé sur un vrai proje
 Construction d'un mini-modèle Power BI sur des données de ventes fictives : tables Ventes, Clients, Produits, Calendrier. Correction des erreurs de cardinalités, premières mesures DAX.
 
 ### Ce que j'ai compris
+
 **La granularité conditionne tout.** Avant même de penser aux visuels, il faut répondre à : *"une ligne représente quoi ?"* Si la réponse n'est pas claire, le modèle produit des résultats faux.
 
 **Sans dim_calendrier, pas de Time Intelligence.** Les fonctions DAX comme `SAMEPERIODLASTYEAR` ou `DATESYTD` ne fonctionnent pas sans une dimension calendrier correcte. Ce n'est pas un détail — c'est une condition préalable.
@@ -102,6 +104,7 @@ J'avais un modèle de données théorique construit depuis une prise de notes. M
 Réunion avec l'encadrant (dimanche 3 août). Réception et analyse des 4 dossiers de projets réels. Restructuration complète du dépôt GitHub en format cabinet de conseil. Découverte des 16 indicateurs de développement durable.
 
 ### Ce que j'ai compris
+
 **Un modèle théorique est toujours incomplet.** Les données réelles m'ont révélé une dimension entière que je n'avais pas anticipée : les indicateurs de développement durable (16 par projet, avec cibles et valeurs constatées). J'ai dû ajouter une entité `INDICATEUR_DD` et un référentiel `TYPE_INDICATEUR` qui n'existaient pas dans ma première version.
 
 **Les données brutes parlent si on sait les lire.** En analysant les 4 projets, j'ai observé que les mêmes 6 entreprises interviennent systématiquement, que les mêmes 5 organismes financent les mêmes natures de travaux, que le même MOE (Artelia) pilote les 4 projets. Ce n'est pas de la redondance — c'est le signal que le modèle doit avoir des référentiels stables.
@@ -126,6 +129,7 @@ Cette erreur m'a conduit à créer l'entité **estimation_financiere**.
 J'avais des données structurées et un modèle de données incomplet — construit sans méthode formelle. Je générais des fichiers Excel "au fil de l'eau" en ajoutant des colonnes selon les besoins.
 
 ### Ce que j'ai fait
+
 **Décision majeure :** arrêter de générer des fichiers et reprendre depuis le MCD Mérise.
 
 Construction du MCD complet avec la méthode Merise : 17 entités, toutes les cardinalités, toutes les associations. Discussion et validation de chaque choix avec l'encadrant (virtuel). Traduction en MLD. Génération du DDL PostgreSQL (571 lignes). Regénération des 17 fichiers Excel depuis le MCD validé.
@@ -158,6 +162,7 @@ Power BI
 Cette décision m'a permis de garantir que chaque fichier Excel représente une entité clairement définie.
 
 ### Ce que j'ai compris
+
 **La méthode avant l'outil.** La différence entre un fichier Excel généré "au fil de l'eau" et un fichier Excel traduit depuis un MCD validé est invisible à l'œil nu — mais fondamentale. Le premier sera incohérent dès qu'on ajoute un nouveau projet. Le second est extensible sans modification de la structure.
 
 **Trois décisions de modélisation qui méritent d'être expliquées :**
@@ -253,5 +258,21 @@ Analyser 4 dossiers de projets réels m'a appris à lire des données comme un m
 
 ---
 
-*Rapport de stage ATLAS · BAMANIA Nicolas · Data Engineering 2025*  
+## Structure du dépôt GitHub
+
+```
+ATLAS/
+├── 01_Contexte/          ← Présentation, glossaire, acteurs
+├── 02_Analyse_Metier/    ← Cycle de vie, synthèse 4 projets
+├── 03_Modelisation/      ← MCD, MLD, star schema, dictionnaires
+├── 04_Donnees/           ← Données par projet
+├── 05_ETL/               ← Python, SQL, dbt ?, Kestra ?
+├── 06_Dashboard/         ← Power BI, mockups, KPIs
+├── 07_Documentation/     ← Annexes et livrables
+└── rapport_stage/        ← Ce document + journal de bord
+```
+
+---
+
+*Rapport de stage ATLAS · BAMANIA Nathanael Nicolas · Data Engineering 2026*  
 *Document vivant — mis à jour chaque semaine*

@@ -1,7 +1,7 @@
 # Modèle Conceptuel de Données (MCD) — ATLAS
 
 > Basé sur l'analyse des 4 projets pilotes  
-> Communauté de Communes du Grand Avignon — Août 2025
+> Communauté de Communes du Grand Avignon — Août 2026
 
 ---
 
@@ -215,4 +215,4 @@ Mesures par projet avec cibles et valeurs constatées.
 
 ---
 
-*MCD ATLAS · v1.0 · Août 2025 — basé sur l'analyse des 4 projets pilotes*
+*MCD ATLAS · v1.0 · Août 2026 — basé sur l'analyse des 4 projets pilotes*

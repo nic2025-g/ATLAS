@@ -127,4 +127,4 @@
 
 ---
 
-*Synthèse 4 projets · ATLAS · Communauté de Communes du Grand Avignon · Août 2025*
+*Synthèse 4 projets · ATLAS · Communauté de Communes du Grand Avignon · Août 2026*
