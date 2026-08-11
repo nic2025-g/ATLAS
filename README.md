@@ -5,23 +5,17 @@
 [![Statut](https://img.shields.io/badge/Statut-En%20développement-orange)](.)
 [![Modélisation](https://img.shields.io/badge/MCD%20%2F%20MLD-Conçus-1A6B3C)](.)
 [![Données](https://img.shields.io/badge/Données-17%20fichiers%20Excel-217346)](.)
-[![BI](https://img.shields.io/badge/Power%20BI-En%20cours-F2C811)](.)
+[![BI](https://img.shields.io/badge/Power%20BI-Modèle%20relationnel%20construit-F2C811)](.)
+
+---
 
 ## Ce projet en une phrase
 
-ATLAS vise à fournir au Directeur des Services Techniques et aux élus une vision consolidée et régulièrement actualisée des opérations d’aménagement : budgets, marchés, subventions, délais, risques et performance environnementale et sociale.
+Concevoir une plateforme décisionnelle qui permet aux élus et au Directeur des Services Techniques de la Communauté de Communes du Grand Avignon de piloter leurs investissements territoriaux en temps réel — sans consolidations manuelles.
 
-## Contexte
+---
 
-Les informations relatives aux projets d’aménagement sont initialement présentes dans des dossiers métier narratifs et dans différents supports de suivi.
-
-La première mission du projet consiste donc à transformer ces informations non structurées en un socle de données homogène, contrôlé et réutilisable.
-
-ATLAS repose actuellement sur quatre opérations pilotes, structurées dans dix-sept fichiers Excel publiés sur OneDrive / SharePoint et destinés à alimenter Power BI.
-
-Le modèle est conçu pour intégrer progressivement de nouvelles opérations sans remettre en cause sa structure générale.
-
-## D'où je suis parti — où j'en suis
+## D'où je suis parti — où j'en suis (Progression)
 
 ```
 Semaine 1  →  Découverte de Power BI — modèle simplifié ventes
@@ -36,7 +30,11 @@ Semaine 3  →  Données réelles — 4 projets pilotes, 16 indicateurs DD
 Semaine 4  →  MCD Merise complet → MLD → DDL SQL → 17 fichiers Excel
                 ↓ apprentissage : méthode d'abord, outils ensuite
 
-Semaine 5+ →  Power BI dashboard — en cours
+Étape actuelle → Mesures DAX et validation des KPI
+                 Passer du modèle de données à l'information décisionnelle
+
+Étape suivante → Dashboard
+                 Construire des vues adaptées aux élus et au DGST
 ```
 
 ---
@@ -52,109 +50,150 @@ Aujourd'hui, les services techniques suivent leurs projets dans des fichiers Exc
 ---
 
 ## La solution ATLAS
-```
-L'architecture opérationnelle actuelle est :
 
-Notes métier des opérations
-          │
-          ▼
-Extraction et structuration manuelles
-          │
-          ▼
-17 fichiers Excel normalisés
-          │
-          ▼
+L'objectif opérationnel est de disposer d'une chaîne simple et maîtrisée :
+
+```text
+Notes et dossiers métier
+        │
+        ▼
+Analyse et extraction des informations
+        │
+        ▼
+17 fichiers Excel structurés
+        │
+        ▼
 OneDrive / SharePoint
-          │
-          ▼
+        │
+        ▼
 Power Query
-          │
-          ▼
-Modèle analytique Power BI
-          │
-          ▼
-Dashboard élus / DGST
-
-
-La version industrielle sera une architecture cible :
-
-Excel / SharePoint
         │
         ▼
-      Airbyte
+Modèle relationnel Power BI
         │
         ▼
- PostgreSQL — raw
+Mesures DAX / KPI
         │
         ▼
- dbt — staging / marts
-        │
-        ▼
-     Power BI
-        ▲
-        │
-      Kestra
+Dashboard de pilotage
 ```
+
+Cette architecture constitue le **périmètre opérationnel du prototype**. Une architecture plus industrialisée est étudiée séparément comme perspective d'évolution ; elle ne doit pas masquer l'objectif prioritaire du stage : valider les données, le modèle et les usages décisionnels.
+
 ---
 
-## État actuel du projet
-
-### Réalisé
-
-```
-- Analyse de quatre opérations pilotes ;
-- extraction et structuration des informations issues des notes métier ;
-- conception du MCD et du MLD ;
-- création de 17 fichiers Excel reliés par des identifiants ;
-- dépôt des fichiers sur OneDrive / SharePoint ;
-- préparation du dictionnaire de données ;
-- conception préliminaire du DDL PostgreSQL.
-```
-### En cours
-
-```
-- contrôle de la qualité et de l’intégrité référentielle des fichiers ;
-- connexion des fichiers à Power BI ;
-- adaptation du modèle conceptuel au modèle analytique Power BI ;
-- création des mesures DAX et des premières pages du dashboard.
-```
-
-### Perspective d’industrialisation
-
-```
-- ingestion avec Airbyte ;
-- stockage dans PostgreSQL ;
-- transformations avec dbt ;
-- orchestration avec Kestra ;
-- conteneurisation avec Docker.
-```
----
 ## Le modèle de données — 17 tables en 5 couches
 
+Les 17 fichiers ont été organisés en cinq familles. Cette organisation matérialise le passage des notes métier vers un modèle exploitable dans Power BI.
+
+| Couche | Fichiers | Rôle |
+|---|---|---|
+| **1 — Référentiels stables** | `Communes`, `Acteurs`, `Entreprises`, `Phase`, `Organismes`, `Type_Travaux` | Décrire les objets de référence partagés |
+| **2 — Catalogues** | `Types_Risques`, `Type_Indicateur` | Normaliser les catégories utilisées dans les faits |
+| **3 — Objets métier** | `Operations`, `Estimation_Financiere`, `Marche`, `Lots` | Décrire le cœur d'une opération et son évolution financière/contractuelle |
+| **4 — Associations** | `Intervenir_Sur`, `Participer_Au_Lot` | Gérer les relations plusieurs-à-plusieurs entre opérations, acteurs, lots et entreprises |
+| **5 — Faits métier** | `Subventions`, `Risques`, `Indicateurs_DD` | Porter les événements et mesures analysés dans Power BI |
+
+### Pourquoi 17 fichiers ?
+
+Le découpage ne cherche pas à multiplier artificiellement les sources. Il répond à plusieurs besoins :
+
+- éviter de répéter les mêmes informations dans plusieurs lignes ;
+- conserver des référentiels communs ;
+- représenter correctement les relations métier ;
+- permettre l'ajout de nouvelles opérations sans modifier la structure générale ;
+- préparer un modèle Power BI dans lequel les filtres et les agrégations restent maîtrisables.
+
+---
+
+## Décisions de modélisation
+
+### Rôle des acteurs porté par l'association
+
+`ACTEUR` décrit une organisation. Son rôle dans une opération (MOA, MOE, etc.) est porté par `INTERVENIR_SUR`, afin de ne pas figer un rôle qui dépend du contexte de l'opération.
+
+### Historisation des estimations financières
+
+`ESTIMATION_FINANCIERE` est séparée de `OPERATION`. Une estimation devient une observation datée et typée (`budget_programme`, `budget_avp`, `budget_pro`, `prix_marche`, `montant_engage`, `cout_final`) plutôt qu'une succession de colonnes figées dans l'opération.
+
+### Marché distinct de l'opération
+
+`MARCHE` est modélisé comme un objet métier autonome. Une opération peut ainsi être reliée à un ou plusieurs marchés sans confondre le projet d'aménagement avec l'acte contractuel.
+
+### Associations plusieurs-à-plusieurs explicites
+
+`INTERVENIR_SUR` et `PARTICIPER_AU_LOT` permettent de représenter les relations métier N:N sans recourir directement à des relations plusieurs-à-plusieurs ambiguës dans Power BI.
+
+---
+
+## De la source au modèle Power BI
+
+Le travail réalisé peut être résumé en quatre transformations successives :
+
+### 1. Informations métier non structurées
+
+Les quatre dossiers pilotes ont d'abord été considérés comme des **prises de notes métier** et non comme des tables directement exploitables.
+
+### 2. Identification des entités et règles de gestion
+
+L'analyse a permis d'identifier les opérations, communes, acteurs, marchés, lots, estimations financières, subventions, risques, indicateurs et leurs relations.
+
+### 3. Construction du socle Excel
+
+Ces informations ont été réparties dans 17 fichiers reliés par des identifiants (`operation_id`, `commune_id`, `marche_id`, etc.).
+
+### 4. Construction du modèle Power BI
+
+Les fichiers ont été importés dans Power BI et les relations ont été créées. Une table dédiée `_Mesures_ATLAS` centralise désormais les mesures DAX, classées par domaine fonctionnel.
+
+---
+
+## Premiers axes de pilotage
+
+Les mesures DAX sont organisées dans `_Mesures_ATLAS` par domaine :
+
+```text
+01_Validation
+02_Investissements
+03_Subventions
+04_Délais
+05_Risques
+06_Développement_Durable
+07_Performance
+08_Alertes        (à consolider)
 ```
-Couche 1 — Référentiels stables   (6)
-    COMMUNE · ACTEUR · ENTREPRISE · PHASE · ORGANISME · TYPE_TRAVAUX
 
-Couche 2 — Référentiels catalogues(2)
-    TYPE_RISQUE · TYPE_INDICATEUR
+Les KPI définitifs ne sont pas considérés comme figés à ce stade. Ils doivent être validés à partir des questions réellement posées par le DGST et les élus.
 
-Couche 3 — Objets métier          (4)
-    OPERATION · ESTIMATION_FINANCIERE · MARCHE · LOT
+Les premiers axes étudiés sont :
 
-Couche 4 — Associations N:N       (2)
-    INTERVENIR_SUR · PARTICIPER_AU_LOT
+- **investissements** : budgets, marchés, engagements, évolution des estimations ;
+- **financement** : subventions notifiées, taux de financement externe, reste à charge ;
+- **délais** : opérations/lots en retard, respect des échéances ;
+- **risques** : risques avérés, criticité, opérations nécessitant une attention ;
+- **performance** : respect des budgets et délais ;
+- **développement durable** : comparaison entre objectifs et valeurs constatées.
 
-Couche 5 — Faits métier           (3)
-    SUBVENTION · RISQUE · INDICATEUR_DD
-```
+---
 
-**3 décisions de modélisation importantes :**
+## État d'avancement au 10 août 2026
 
-`type_acteur` n'est pas dans `ACTEUR` — le rôle MOA/MOE est dans l'association `INTERVENIR_SUR`. Artelia est une organisation — son rôle dépend de sa relation avec le projet.
-
-`ESTIMATION_FINANCIERE` est une entité séparée — pas 5 colonnes dans `OPERATION`. Chaque estimation est une ligne avec sa date. L'historique est conservé de l'AVP au coût final.
-
-`MARCHE` est une entité à part entière — acte juridique distinct de l'opération, avec sa propre cardinalité (1 opération → N marchés possibles).
+| Étape | État | Résultat |
+|---|---:|---|
+| Compréhension du cas simplifié Ventes / Clients / Produits | ✅ | Granularité, cardinalités et principes de modélisation étudiés |
+| Analyse métier des opérations d'aménagement | ✅ | Cycle de vie, acteurs et principaux besoins identifiés |
+| Analyse des 4 opérations pilotes | ✅ | Informations métier extraites et comparées |
+| MCD / MLD | ✅ | Modèles conçus |
+| Dictionnaire de données | ✅ | Structure et signification des champs documentées |
+| Construction des 17 fichiers Excel | ✅ | Socle de données constitué |
+| Publication OneDrive / SharePoint | ✅ | Sources accessibles à Power BI |
+| Import Power BI | ✅ | 17 tables chargées |
+| Relations Power BI | ✅ | Modèle relationnel construit |
+| Table de mesures DAX | ✅ | `_Mesures_ATLAS` créée et organisée par dossiers |
+| Mesures de validation | ✅ | Comptages de contrôle créés |
+| KPI financiers, subventions, risques, délais, DD | 🚧 | Premières mesures et alertes en cours de validation |
+| Pages décisionnelles Élus / DGST / Projet / Finances | ⏳ | À construire après validation des KPI |
+| Tests métier avec l'encadrant | ⏳ | À réaliser progressivement |
 
 ---
 
@@ -199,109 +238,96 @@ ATLAS/
 │
 ├── 05_ETL/                         ← Pipeline de données
 │   ├── Python/structuration_donnees.py   ← Audit qualité des données
-│   └── SQL/star_schema.sql               ← DDL PostgreSQL complet (Le projet est documenté sous la forme d’un dossier de conception comprenant l’analyse du besoin, le modèle de données, les règles de gestion, les spécifications du dashboard et les perspectives d’industrialisation.)
+│   └── SQL/star_schema.sql               ← DDL PostgreSQL complet (571 lignes)
 │
 ├── 06_Dashboard/                   ← Power BI (à venir)
+│   ├── KPIs/
+│   ├── Mockups/
+│   └── Captures/
 │
 ├── 07_Documentation/               ← Annexes et livrables Word
+│
+├── 08_Modele_PowerBI/
+│   └── documentation du modèle relationnel, relations et mesures
 │
 └── rapport_stage/
     └── rapport_stage.md            ← Rapport vivant — mis à jour chaque semaine
 ```
+---
+
+## Architecture cible — perspective, pas prérequis du prototype
+
+Une généralisation à davantage d'opérations et à plusieurs années pourrait conduire à une architecture plus industrialisée :
+
+```text
+Excel / SharePoint
+        │
+        ▼
+      Airbyte
+        │
+        ▼
+ PostgreSQL — raw
+        │
+        ▼
+ dbt — staging / marts
+        │
+        ▼
+     Power BI
+
+Kestra : orchestration du pipeline
+Docker : environnement technique reproductible
+```
+
+Cette architecture est actuellement une **proposition de conception**. Sa mise en œuvre n'est pas nécessaire pour valider le prototype Excel / SharePoint / Power BI.
 
 ---
 
-## Stack technique
+## Logique defini pour les étapes àsuivre
 
-| Couche | Phase 1 (en cours) | Phase 2 (conçue) |
-|--------|-------------------|-----------------|
-| Sources | 17 fichiers Excel | Excel / SharePoint |
-| Ingestion | — | Airbyte |
-| Stockage | — | PostgreSQL (DDL prêt) |
-| Transformation | — | dbt |
-| Orchestration | — | Kestra |
-| Restitution | Power BI | Power BI |
-
----
-
-## Démarche suivie:
-
-1. **Acculturation BI**  
-   Étude d’un cas simplifié afin de maîtriser la granularité, les relations et le schéma en étoile.
-
-2. **Analyse métier**  
-   Compréhension du cycle de vie des opérations, des besoins du DGST et des attentes des élus.
-
-3. **Analyse des cas pilotes**  
-   Extraction des informations présentes dans quatre dossiers d’aménagement.
-
-4. **Conception des données**  
-   Élaboration du MCD, du MLD, du dictionnaire et des règles de gestion.
-
-5. **Construction du socle Excel**  
-   Création de 17 fichiers normalisés et publication sur OneDrive / SharePoint.
-
-6. **Restitution décisionnelle**  
-   Construction en cours du modèle Power BI, des KPI et des pages utilisateurs.
-
-7. **Projection industrielle**  
-   Conception d’une architecture cible PostgreSQL, dbt, Airbyte, Kestra et Docker.
+- [x] Comprendre le cas simplifié et les principes de modélisation Power BI
+- [x] Analyser les quatre opérations pilotes
+- [x] Identifier les entités et principales règles métier
+- [x] Produire le MCD et le MLD
+- [x] Construire le dictionnaire de données
+- [x] Constituer les 17 fichiers Excel
+- [x] Publier les fichiers sur OneDrive / SharePoint
+- [x] Importer les 17 tables dans Power BI
+- [x] Construire les relations du modèle Power BI
+- [x] Créer `_Mesures_ATLAS` et les mesures de validation
+- [ ] Faire valider avec l'encadrant la structure des 17 fichiers et les règles métier sensibles
+- [ ] Créer / intégrer la dimension calendrier adaptée au modèle analytique
+- [ ] Finaliser les KPI financiers et de subventions
+- [ ] Finaliser les KPI de délais, risques, performance et développement durable
+- [ ] Formaliser les règles d'alerte
+- [ ] Concevoir la vue de synthèse Élus
+- [ ] Concevoir la vue de pilotage DGST
+- [ ] Concevoir les vues Projet et Finances
+- [ ] Tester les filtres, mesures et agrégations sur chaque opération
+- [ ] Tester le dashboard avec l'encadrant
+- [ ] Documenter le modèle Power BI et les KPI
+- [ ] Finaliser le guide utilisateur
+- [ ] Formaliser l'architecture industrielle cible
 
 ---
 
 ## Périmètre et limites actuelles
 
-La première version d’ATLAS constitue un prototype décisionnel construit à partir de quatre opérations pilotes.
+ATLAS est actuellement un **prototype construit sur quatre opérations pilotes**.
 
 À ce stade :
 
-- les informations sont extraites manuellement depuis des notes métier ;
-- les fichiers Excel constituent le système de collecte et de stockage ;
-- certaines données de clôture sont absentes, notamment les coûts définitifs et les dates réelles de réception ;
-- les indicateurs sont calculés sur un échantillon limité ;
-- l’architecture PostgreSQL, dbt et Kestra est conçue comme une perspective et n’est pas encore déployée.
+- l'extraction initiale depuis les dossiers métier reste manuelle ;
+- Excel / OneDrive / SharePoint constitue le socle de données opérationnel ;
+- certaines informations de clôture peuvent être absentes ou à confirmer ;
+- les KPI sont encore en phase de définition et de validation métier ;
+- les résultats ne doivent pas être généralisés à l'ensemble des opérations de la collectivité tant que le modèle n'a pas été testé sur un périmètre plus large ;
+- l'architecture PostgreSQL / dbt / Airbyte / Kestra reste une perspective d'industrialisation.
 
-Le modèle a toutefois été pensé pour accueillir progressivement de nouvelles opérations.
-
----
-
-## Qualité et gouvernance des données
-
-ATLAS repose sur plusieurs règles de qualité :
-
-- unicité des clés primaires ;
-- contrôle des clés étrangères ;
-- utilisation de référentiels communs ;
-- formats homogènes pour les dates et les montants ;
-- absence de cellules fusionnées dans les fichiers sources ;
-- listes contrôlées pour les phases, risques, organismes et types de travaux ;
-- traçabilité des informations manquantes ou à confirmer.
-
-Un script d’audit permet de détecter les doublons, les références orphelines et les valeurs obligatoires absentes.
-
----
-
-## Prochaines étapes
-
-- [x] Analyser les quatre opérations pilotes
-- [x] Définir les entités et les règles métier
-- [x] Produire le MCD et le MLD
-- [x] Construire les 17 fichiers Excel
-- [x] Publier les fichiers sur OneDrive / SharePoint
-- [ ] Contrôler l’intégrité des relations
-- [ ] Construire le modèle analytique Power BI
-- [ ] Créer la dimension calendrier
-- [ ] Développer les KPI financiers
-- [ ] Développer les KPI de délais et de risques
-- [ ] Concevoir les vues Élus, DGST, Projet et Finances
-- [ ] Tester le dashboard avec l’encadrant
-- [ ] Finaliser le guide utilisateur
-- [ ] Formaliser l’architecture industrielle cible
 ---
 
 ## Auteur
 
-**BAMANIA Nicolas** — Stagiaire Data Engineering  
+**BAMANIA Nathanael Nicolas** — Stagiaire Data Engineering  
 Formation OpenClassrooms · CC Grand Avignon  
 Encadrant : **Dominique VOLOT** — Directeur des Services Techniques  
-Stage : 15 juillet → 2 septembre 2026
+Stage : 15 juillet 2026 → 2 septembre 2026
