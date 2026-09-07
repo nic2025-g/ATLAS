@@ -21,3 +21,6 @@ __pycache__/
 
 # Sources métier brutes - non publiées sur GitHub
 04_Donnees/*/notes_brutes/*.docx
+
+# Variables d'environnement / secrets
+.env
