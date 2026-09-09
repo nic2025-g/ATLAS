@@ -1,0 +1,69 @@
+version: 2
+
+models:
+
+  - name: stg_operations
+    columns:
+      - name: reference_artelia
+        data_tests:
+          - not_null
+          - unique
+
+
+  - name: stg_budgets
+    columns:
+      - name: reference_artelia
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_operations')
+                field: reference_artelia
+
+      - name: phase
+        data_tests:
+          - accepted_values:
+              arguments:
+                values:
+                  - PROGRAMME
+                  - AVP
+                  - PRO
+                  - MARCHE
+
+
+  - name: stg_lots
+    columns:
+      - name: lot_id_source
+        data_tests:
+          - not_null
+          - unique
+
+      - name: reference_artelia
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_operations')
+                field: reference_artelia
+
+
+  - name: stg_subventions
+    columns:
+      - name: reference_artelia
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_operations')
+                field: reference_artelia
+
+
+  - name: stg_indicateurs_dd
+    columns:
+      - name: reference_artelia
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_operations')
+                field: reference_artelia

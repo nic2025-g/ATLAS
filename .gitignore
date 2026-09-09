@@ -11,3 +11,18 @@ __pycache__/
 .DS_Store
 Thumbs.db
 *.log
+
+# Python
+__pycache__/
+*.pyc
+
+# Données générées par le pipeline Python
+05_ETL/Python/raw/
+
+# Sources métier brutes - non publiées sur GitHub
+04_Donnees/*/notes_brutes/*.docx
+
+# Variables d'environnement / secrets
+.env
+
+*_backup.py

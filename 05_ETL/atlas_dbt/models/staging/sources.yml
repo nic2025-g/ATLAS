@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: raw
+
+    tables:
+      - name: operations
+      - name: budgets
+      - name: lots
+      - name: subventions
+      - name: indicateurs_dd
