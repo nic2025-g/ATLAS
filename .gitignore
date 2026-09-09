@@ -24,3 +24,5 @@ __pycache__/
 
 # Variables d'environnement / secrets
 .env
+
+*_backup.py
